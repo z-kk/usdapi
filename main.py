@@ -115,9 +115,12 @@ def initialize():
 	if ("SLEEP_TIME" not in confData):
 		SLEEP_TIME = input("取得間隔[s]: ")
 		confData.update({"SLEEP_TIME": SLEEP_TIME})
+	if ("SLACK_API" not in confData):
+		SLACK_API = input("slack api: ")
+		confData.update({"SLACK_API": SLACK_API})
 
-		with open(confFile, 'w') as f:
-			json.dump(confData, f)
+	with open(confFile, 'w') as f:
+		json.dump(confData, f)
 
 	return confData
 
@@ -131,6 +134,7 @@ if __name__ == '__main__':
 	SELL_RATE = float(confData['SELL_RATE'])
 	ALERT_RATE = float(confData['ALERT_RATE'])
 	SLEEP_TIME = int(confData['SLEEP_TIME'])
+	SLACK_API = confData['SLACK_API']
 
 	# 過去のデータを取得
 	jdata = getDataFromJson(dataFile)
