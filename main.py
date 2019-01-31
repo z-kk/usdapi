@@ -3,6 +3,7 @@ import requests
 import json
 import time
 import datetime
+from slack_bot import Slack
 
 confFile = 'conf.json'
 dataFile = 'data.json'
@@ -48,6 +49,8 @@ def checkRate(jdata, rate):
 		rate  現在の為替レート
 	"""
 
+	slack = Slack(SLACK_API)
+
 	isOverSellRate = False
 	isUnderBuyRate = False
 
@@ -69,19 +72,25 @@ def checkRate(jdata, rate):
 		if (row['rate'] < ALERT_RATE):
 			isOverSellRate = False
 
+	rateMessage = "為替レートが設定値[{}円]を"
 	if (isOverSellRate):
 		if (rate > MAX_RATE):
+			slack.post_message_to_channel("general", rateMessage.format(str(MAX_RATE)) + "超えました")
 			print("max rate")
 			jdata.update({"data": []})
 		elif (rate < ALERT_RATE):
+			slack.post_message_to_channel("general", rateMessage.format(str(ALERT_RATE)) + "下回りました")
 			print("alert")
 		elif (rate < BUY_RATE):
+			slack.post_message_to_channel("general", rateMessage.format(str(BUY_RATE)) + "下回りました")
 			print("buy")
 	elif (isUnderBuyRate):
 		if (rate < MIN_RATE):
+			slack.post_message_to_channel("general", rateMessage.format(str(MIN_RATE)) + "下回りました")
 			print("min rate")
 			jdata.update({"data": []})
 		elif (rate > SELL_RATE):
+			slack.post_message_to_channel("general", rateMessage.format(str(SELL_RATE)) + "超えました")
 			print("sell")
 
 	return jdata
