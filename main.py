@@ -129,7 +129,7 @@ def initialize():
 		confData.update({"SLACK_API": SLACK_API})
 
 	with open(confFile, 'w') as f:
-		json.dump(confData, f)
+		json.dump(confData, f, indent=4, separators=(',', ': '))
 
 	return confData
 
@@ -160,6 +160,6 @@ if __name__ == '__main__':
 
 		# 全データを書き込む
 		with open(dataFile, 'w') as f:
-			json.dump(jdata, f)
+			json.dump(jdata, f, indent=4, separators=(',', ': '))
 
 		time.sleep(SLEEP_TIME)
