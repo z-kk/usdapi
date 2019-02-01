@@ -3,6 +3,7 @@ import requests
 import json
 import time
 import datetime
+import jsonUtils
 from slack_bot import Slack
 
 confFile = 'conf.json'
@@ -25,22 +26,6 @@ def getUSDRate():
 			ask = float(row['ask'])
 
 			return (bid + ask) / 2
-
-def getDataFromJson(fileName):
-	""" JSONファイルから過去のデータを取得
-	params:
-		fileName JSONファイル名
-	return:
-		dict 過去のデータ
-	"""
-
-	if (os.path.exists(fileName)):
-		with open(fileName, 'r') as f:
-			jdata = json.load(f)
-	else:
-		jdata = {"data": []}
-
-	return jdata
 
 def checkRate(jdata, rate):
 	""" 取得したデータを評価する
@@ -101,11 +86,8 @@ def initialize():
 		dict confData
 	"""
 
-	confData = getDataFromJson(confFile)
+	confData = jsonUtils.readJsonFile(confFile)
 
-	if (confData == {"data": []}):
-		MAX_RATE = input("MaxRate: ")
-		confData = {"MAX_RATE": MAX_RATE}
 	if ("MAX_RATE" not in confData):
 		MAX_RATE = input("MaxRate: ")
 		confData.update({"MAX_RATE": MAX_RATE})
@@ -128,8 +110,7 @@ def initialize():
 		SLACK_API = input("slack api: ")
 		confData.update({"SLACK_API": SLACK_API})
 
-	with open(confFile, 'w') as f:
-		json.dump(confData, f, indent=4, separators=(',', ': '))
+	jsonUtils.writeJsonFile(confFile, confData)
 
 	return confData
 
@@ -146,7 +127,9 @@ if __name__ == '__main__':
 	SLACK_API = confData['SLACK_API']
 
 	# 過去のデータを取得
-	jdata = getDataFromJson(dataFile)
+	jdata = jsonUtils.readJsonFile(dataFile)
+	if (jdata == {}):
+		jdata = {"data": []}
 
 	while 1:
 		# 米ドルレートを取得
@@ -159,7 +142,6 @@ if __name__ == '__main__':
 		jdata['data'].append({"when": datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), "rate": round(rate, 3)})
 
 		# 全データを書き込む
-		with open(dataFile, 'w') as f:
-			json.dump(jdata, f, indent=4, separators=(',', ': '))
+		jsonUtils.writeJsonFile(dataFile, jdata)
 
 		time.sleep(SLEEP_TIME)
