@@ -1,6 +1,4 @@
-import os
 import requests
-import json
 import time
 import datetime
 import jsonUtils
@@ -115,6 +113,7 @@ def initialize():
 	return confData
 
 if __name__ == '__main__':
+	""" main """
 
 	confData = initialize()
 
