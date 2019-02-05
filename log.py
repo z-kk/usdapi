@@ -79,25 +79,17 @@ def showLog():
 
 	return 0
 
-def printGraph():
+def printGraph(tdelta = 0):
 	""" 為替レートグラフを出力 """
 
 	jdata = jsonUtils.readJsonFile(dataFile)
 	if (jdata == {}):
 		return 404
 
-	args = sys.argv
-
 	x = []
 	y = []
 	for row in jdata['data']:
 		when = datetime.datetime.strptime(row['when'], "%Y-%m-%d %H:%M:%S")
-
-		# 引数の確認
-		try:
-			tdelta = float(args[1])
-		except:
-			tdelta = 0
 
 		# 引数(n)があればn時間分だけを集計
 		if (tdelta > 0):
@@ -187,7 +179,14 @@ if __name__ == '__main__':
 		elif (whatToDo == "3"):
 			showLog()
 		else:
-			printGraph()
+			args = sys.argv
+			# 引数の確認
+			try:
+				tdelta = float(args[1])
+			except:
+				tdelta = 0
+
+			printGraph(tdelta)
 			break
 
 	# 終了

@@ -135,7 +135,7 @@ if __name__ == '__main__':
 		rate = getUSDRate()
 
 		# レートを分析
-		checkRate(jdata, rate)
+		jdata = checkRate(jdata, rate)
 
 		# 取得したデータを過去のデータに追加
 		jdata['data'].append({"when": datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), "rate": round(rate, 3)})
