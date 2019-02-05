@@ -1,3 +1,4 @@
+import sys
 import datetime
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
@@ -85,10 +86,26 @@ def printGraph():
 	if (jdata == {}):
 		return 404
 
+	args = sys.argv
+
 	x = []
 	y = []
 	for row in jdata['data']:
-		x.append(datetime.datetime.strptime(row['when'], "%Y-%m-%d %H:%M:%S"))
+		when = datetime.datetime.strptime(row['when'], "%Y-%m-%d %H:%M:%S")
+
+		# 引数の確認
+		try:
+			tdelta = float(args[1])
+		except:
+			tdelta = 0
+
+		# 引数(n)があればn時間分だけを集計
+		if (tdelta > 0):
+			if (when < datetime.datetime.now() - datetime.timedelta(hours=tdelta)):
+				continue
+
+		# 集計するリストに値を追加
+		x.append(when)
 		y.append(row['rate'])
 
 	plt.switch_backend("agg")
