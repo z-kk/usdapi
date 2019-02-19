@@ -25,13 +25,14 @@ def qsort(li):
 if __name__ == '__main__':
 	""" main """
 
-	sys.setrecursionlimit(1000000)
+	sys.setrecursionlimit(10000)
 
 	jdata = jsonUtils.readJsonFile(DataFile)
 	if (jdata == {}):
 		exit
 
-	jdata['data'] = qsort(jdata['data'])
+	#jdata['data'] = qsort(jdata['data'])
+	jdata['data'].sort(key=lambda x: x['when'])
 
 	jsonUtils.writeJsonFile(DataFile, jdata)
 	print("return 0")
