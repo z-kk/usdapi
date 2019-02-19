@@ -131,16 +131,19 @@ if __name__ == '__main__':
 		jdata = {"data": []}
 
 	while 1:
-		# 米ドルレートを取得
-		rate = getUSDRate()
+		try:
+			# 米ドルレートを取得
+			rate = getUSDRate()
 
-		# レートを分析
-		jdata = checkRate(jdata, rate)
+			# レートを分析
+			jdata = checkRate(jdata, rate)
 
-		# 取得したデータを過去のデータに追加
-		jdata['data'].append({"when": datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), "rate": round(rate, 3)})
+			# 取得したデータを過去のデータに追加
+			jdata['data'].append({"when": datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), "rate": round(rate, 3)})
 
-		# 全データを書き込む
-		jsonUtils.writeJsonFile(dataFile, jdata)
+			# 全データを書き込む
+			jsonUtils.writeJsonFile(dataFile, jdata)
 
-		time.sleep(SLEEP_TIME)
+			time.sleep(SLEEP_TIME)
+		except:
+			time.sleep(10)
